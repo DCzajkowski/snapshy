@@ -1,0 +1,2 @@
+defmodule SnapshyTest do
+end
