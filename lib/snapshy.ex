@@ -88,7 +88,12 @@ defmodule Snapshy do
 
   defp serialize(value) do
     value
-    |> Inspect.Algebra.to_doc(%Inspect.Opts{})
+    |> Inspect.Algebra.to_doc(%Inspect.Opts{
+      limit: :infinity,
+      printable_limit: :infinity,
+      binaries: :as_binaries,
+      pretty: true
+    })
     |> Inspect.Algebra.group()
     |> Inspect.Algebra.format(80)
     |> Enum.join()
