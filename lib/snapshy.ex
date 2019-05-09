@@ -91,7 +91,6 @@ defmodule Snapshy do
     |> Inspect.Algebra.to_doc(%Inspect.Opts{
       limit: :infinity,
       printable_limit: :infinity,
-      binaries: :as_binaries,
       pretty: true
     })
     |> Inspect.Algebra.group()
