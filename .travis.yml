@@ -1,0 +1,16 @@
+language: elixir
+
+sudo: false
+
+matrix:
+  include:
+    - otp_release: 21.0
+      elixir: 1.8.1
+
+script:
+  - mix format --check-formatted
+  - mix test --trace
+
+cache:
+  directories:
+    - priv/plts
