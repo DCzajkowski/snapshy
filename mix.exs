@@ -9,7 +9,14 @@ defmodule Snapshy.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: description(),
-      package: package()
+      package: package(),
+
+      # Docs
+      name: "Snapshy",
+      source_url: "https://github.com/dczajkowski/snapshy",
+      docs: [
+        main: "Snapshy"
+      ]
     ]
   end
 
@@ -23,7 +30,7 @@ defmodule Snapshy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      #
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
 

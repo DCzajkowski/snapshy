@@ -1,16 +1,92 @@
 defmodule Snapshy do
+  @moduledoc """
+  Snapshy is a simple snapshot testing library for ExUnit.
+
+  ## What is snapshot testing?
+  Snapshot tests work a little bit different compared to regular
+  unit or integration tests. The only difference is that in snapshot
+  tests you don't write any assertions. You only tell the library
+  test this function call for me and I don't want to write any assertions
+  for it. When that happens, Snapshy takes a result of a function call
+  and stores it in a file (this is what is called a "snapshot").
+  When this happens, a capital `S` is displayed in your test suite.
+  Next time you run a test, an assertion will be made
+  against that file. If it fails, you can either fix your code or override
+  the snapshot with current result.
+
+  ## When is snapshot testing useful?
+  Snapshot testing is very useful if you have some type of pure function or
+  command, that is tested in many different scenarios. In most cases,
+  these tests are written if you are working on a compiler, code beautifier
+  etc. where a result of the function/command is long and doesn't have any
+  particular meaning, but you want the result to be preserved when you are
+  refactoring your code or adding a new feature. In these cases, more important
+  is what input you are testing, not what output you got. As long as it is the
+  same as it used to be, you are good to go.
+
+  ## How to get started?
+  Getting started with Snapshy is very easy.
+
+  Add the `use Snapshy` statement in the test suite that will be designated for
+  your snapshot tests. Note, it is not required for it to have only snapshot
+  tests.
+
+      defmodule ExampleTest do
+        use Snapshy
+        use ExUnit.Case
+
+        # ...
+      end
+
+  To mark a test as a snapshot, use the `Snapshy.test_snapshot` macro.
+
+      test_snapshot "returns the hello message" do
+        "Hello, World!"
+      end
+
+  In this case, the snapshot would be stored in
+  `/test/__snapshots__/path/to/example_test/returns_the_hello_message.snap`.
+  This file should be commited the same as your assertion would be.
+
+  ## Overriding existing snapshots
+  Sometimes the change you make in the output is desired. In these cases
+  you can run the test with `SNAPSHY_OVERRIDE` set to true. Make sure to review
+  all changes in your version control history, as all failing snapshots will be
+  overridden.
+
+  ```
+  $ SNAPSHY_OVERRIDE=true mix test
+  ```
+  """
+
   defmacro __using__(_options) do
     quote do
       import Snapshy, only: [match_snapshot: 1, test_snapshot: 2]
     end
   end
 
+  @doc """
+  It creates a `Snapshy.match_snapshot` assertion with correct parameters.
+  """
   defmacro match_snapshot(value) do
     quote do
       Snapshy.match(unquote(value), unquote(Macro.escape(__CALLER__)))
     end
   end
 
+  @doc """
+  It creates a regular test, which invokes `Snapshy.match_snapshot` with
+  correct parameters.
+
+  ## Example
+
+      test_snapshot "returns the hello message" do
+        "Hello, World!"
+      end
+
+  In this example, the "Hello, World!" string will be written to the file and
+  saved for future assertions.
+  """
   defmacro test_snapshot(name, do: expr) do
     quote do
       test unquote(name) do
@@ -19,6 +95,10 @@ defmodule Snapshy do
     end
   end
 
+  @doc """
+  This function is not really supposed to be used manually, but can be used
+  in rare cases when you want to have more control on the caller information.
+  """
   def match(actual_value, %Macro.Env{function: function, file: file}) do
     file = get_file(file, function)
 
