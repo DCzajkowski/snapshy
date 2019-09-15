@@ -10,7 +10,7 @@ Add `snapshy` to your list of dependencies in `mix.exs` and run `mix deps.get`:
 def deps do
   [
     # ...
-    {:snapshy, "~> 0.1.0"}
+    {:snapshy, "~> 0.2"}
   ]
 end
 ```
