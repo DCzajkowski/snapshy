@@ -23,4 +23,14 @@ defmodule SnapshyTest do
   test "it saves a file for custom structs" do
     match_snapshot(%Struct{key: "different_value"})
   end
+
+  describe "test_snapshot" do
+    setup do
+      [key: :value]
+    end
+
+    test_snapshot "it accepts a context", context do
+      context
+    end
+  end
 end
