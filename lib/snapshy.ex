@@ -61,7 +61,7 @@ defmodule Snapshy do
 
   defmacro __using__(_options) do
     quote do
-      import Snapshy, only: [match_snapshot: 1, test_snapshot: 2]
+      import Snapshy, only: [match_snapshot: 1, test_snapshot: 2, test_snapshot: 3]
     end
   end
 
@@ -90,6 +90,17 @@ defmodule Snapshy do
   defmacro test_snapshot(name, do: expr) do
     quote do
       test unquote(name) do
+        match_snapshot(unquote(expr))
+      end
+    end
+  end
+
+  @doc """
+  Same as `Snashy.test_snapshot/2` but excepts a context.
+  """
+  defmacro test_snapshot(name, context, do: expr) do
+    quote do
+      test unquote(name), unquote(context) do
         match_snapshot(unquote(expr))
       end
     end
