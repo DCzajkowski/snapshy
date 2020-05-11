@@ -30,7 +30,7 @@ defmodule SnapshyTest do
     end
 
     test_snapshot "it accepts a context", context do
-      context
+      context[:key]
     end
   end
 end

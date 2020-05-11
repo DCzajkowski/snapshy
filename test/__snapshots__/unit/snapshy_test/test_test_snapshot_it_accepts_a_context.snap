@@ -1,13 +1,1 @@
-%{
-  async: false,
-  case: SnapshyTest,
-  describe: "test_snapshot",
-  describe_line: 27,
-  file: "/Users/john.wright/Workspace/snapshy/test/unit/snapshy_test.exs",
-  key: :value,
-  line: 32,
-  module: SnapshyTest,
-  registered: %{},
-  test: :"test test_snapshot it accepts a context",
-  test_type: :test
-}
+:value
