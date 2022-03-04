@@ -202,7 +202,8 @@ defmodule Snapshy do
     [
       limit: :infinity,
       printable_limit: :infinity,
-      pretty: true
+      pretty: true,
+      structs: false
     ]
   end
 

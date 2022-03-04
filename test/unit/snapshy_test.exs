@@ -24,13 +24,12 @@ defmodule SnapshyTest do
     match_snapshot(%Struct{key: "different_value"})
   end
 
-  test "saved file can be evaluated for opaque structs when serialize structs option is false", %{test: test_name} do
+  test "saved file can be evaluated for opaque structs when serialize structs option is false (default)", %{test: test_name} do
     snap_filename = snap_file_for_test(test_name)
 
     assert File.exists?(snap_filename) == false
 
-    original_serialized_inspect_options = Application.get_env(:snapshy, :serialize_inspect_options)
-    Application.put_env(:snapshy, :serialize_inspect_options, [structs: false])
+    original_serialized_inspect_options = Application.get_env(:snapshy, :serialize_inspect_options, [])
 
     opaque_struct = %Struct{key: Version.parse!("1.2.3")}
 
@@ -38,13 +37,11 @@ defmodule SnapshyTest do
 
     assert {:ok, serialized_value} = File.read(snap_filename)
 
-    assert {value, []} = Code.eval_string(serialized_value, [], __ENV__)
+    assert {^opaque_struct, []} = Code.eval_string(serialized_value, [], __ENV__)
 
     assert File.rm(snap_filename)
 
-    unless original_serialized_inspect_options do
-      Application.put_env(:snapshy, :serialize_inspect_options, original_serialized_inspect_options)
-    end
+    Application.put_env(:snapshy, :serialize_inspect_options, original_serialized_inspect_options)
   end
 
   test "saved file cannot be evaluated for opaque structs when serialize structs option is true", %{test: test_name} do
@@ -52,7 +49,8 @@ defmodule SnapshyTest do
 
     assert File.exists?(snap_filename) == false
 
-    original_serialized_inspect_options = Application.get_env(:snapshy, :serialize_inspect_options)
+    original_serialized_inspect_options = Application.get_env(:snapshy, :serialize_inspect_options, [])
+
     Application.put_env(:snapshy, :serialize_inspect_options, [structs: true])
 
     opaque_struct = %Struct{key: Version.parse!("1.2.3")}
@@ -62,14 +60,12 @@ defmodule SnapshyTest do
     assert {:ok, serialized_value} = File.read(snap_filename)
 
     assert_raise TokenMissingError, fn ->
-      assert {value, []} = Code.eval_string(serialized_value, [], __ENV__)
+      assert {^opaque_struct, []} = Code.eval_string(serialized_value, [], __ENV__)
     end
 
     assert File.rm(snap_filename)
 
-    unless original_serialized_inspect_options do
-      Application.put_env(:snapshy, :serialize_inspect_options, original_serialized_inspect_options)
-    end
+    Application.put_env(:snapshy, :serialize_inspect_options, original_serialized_inspect_options)
   end
 
   defp snap_file_for_test(test_name) do
