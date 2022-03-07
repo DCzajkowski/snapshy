@@ -4,7 +4,7 @@ defmodule Snapshy.MixProject do
   def project do
     [
       app: :snapshy,
-      version: "0.2.4",
+      version: "0.3.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
