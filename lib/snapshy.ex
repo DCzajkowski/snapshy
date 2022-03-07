@@ -179,11 +179,7 @@ defmodule Snapshy do
 
   defp serialize(value) do
     value
-    |> Inspect.Algebra.to_doc(%Inspect.Opts{
-      limit: :infinity,
-      printable_limit: :infinity,
-      pretty: true
-    })
+    |> Inspect.Algebra.to_doc(inspect_options())
     |> Inspect.Algebra.group()
     |> Inspect.Algebra.format(80)
     |> Enum.join()
@@ -193,6 +189,22 @@ defmodule Snapshy do
     {term, []} = Code.eval_string(value, [], __ENV__)
 
     term
+  end
+
+  defp inspect_options do
+    opts = default_inspect_options()
+      |> Keyword.merge(Application.get_env(:snapshy, :serialize_inspect_options, []))
+
+    struct(Inspect.Opts, opts)
+  end
+
+  defp default_inspect_options do
+    [
+      limit: :infinity,
+      printable_limit: :infinity,
+      pretty: true,
+      structs: false
+    ]
   end
 
   #############################################################################
