@@ -59,8 +59,10 @@ defmodule Snapshy do
   ```
   """
 
-  defmacro __using__(_options) do
+  defmacro __using__(opts) do
+    snapshot_location = opts[:snapshot_location] || "test/__snapshots__/"
     quote do
+      @snapshot_location unquote(snapshot_location)
       import Snapshy, only: [match_snapshot: 1, test_snapshot: 2, test_snapshot: 3]
     end
   end
@@ -70,7 +72,7 @@ defmodule Snapshy do
   """
   defmacro match_snapshot(value) do
     quote do
-      Snapshy.match(unquote(value), unquote(Macro.escape(__CALLER__)))
+      Snapshy.match(unquote(value), unquote(Macro.escape(__CALLER__)), @snapshot_location)
     end
   end
 
@@ -110,8 +112,8 @@ defmodule Snapshy do
   This function is not really supposed to be used manually, but can be used
   in rare cases when you want to have more control on the caller information.
   """
-  def match(actual_value, %Macro.Env{function: function, file: file}) do
-    file = get_file(file, function)
+  def match(actual_value, %Macro.Env{function: function, file: file}, snapshot_location) do
+    file = get_file(file, function, snapshot_location)
 
     case snapshot_exists?(file) do
       {true, snapshot_value} ->
@@ -211,11 +213,11 @@ defmodule Snapshy do
   #  Filename calculation                                                     #
   #############################################################################
 
-  defp get_file(file, function) do
+  defp get_file(file, function, snapshot_location) do
     directory = snapshot_directory(file)
     filename = get_key(function) <> ".snap"
 
-    ["test/", "__snapshots__/", directory, filename]
+    [snapshot_location, directory, filename]
     |> Path.join()
   end
 

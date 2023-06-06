@@ -65,3 +65,12 @@ defmodule SnapshyTest do
     end
   end
 end
+
+defmodule SnapshyDirectoryTest do
+  use Snapshy, snapshot_location: "test/some_env/__snapshots__"
+  use ExUnit.Case
+
+  test "saves snapshot in specified directory" do
+    match_snapshot(%Struct{})
+  end
+end
