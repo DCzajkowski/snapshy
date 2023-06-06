@@ -61,6 +61,7 @@ defmodule Snapshy do
 
   defmacro __using__(opts) do
     snapshot_location = opts[:snapshot_location] || "test/__snapshots__/"
+
     quote do
       @snapshot_location unquote(snapshot_location)
       import Snapshy, only: [match_snapshot: 1, test_snapshot: 2, test_snapshot: 3]
@@ -194,7 +195,8 @@ defmodule Snapshy do
   end
 
   defp inspect_options do
-    opts = default_inspect_options()
+    opts =
+      default_inspect_options()
       |> Keyword.merge(Application.get_env(:snapshy, :serialize_inspect_options, []))
 
     struct(Inspect.Opts, opts)
