@@ -1,6 +1,10 @@
 # Snapshy
 
-Snapshy is an Elixir package for running snapshot tests in ExUnit. More extensive documentation is coming soon.
+Snapshy is an Elixir package for running snapshot tests in ExUnit.
+
+## Alternatives
+
+When I was creating Snapshy I didn't know of any package that would support snapshot testing in Elixir. Since, I have found @assert-value's [assert_value_elixir](https://github.com/assert-value/assert_value_elixir), which is more feature-rich and more polished. If you need something very light-weight, Snapshy might be a good choice. However, if you want interactivity and more features, give [assert_value_elixir](https://hex.pm/packages/assert_value) a try :)
 
 ## Installation
 
