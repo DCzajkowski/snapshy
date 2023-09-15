@@ -184,14 +184,17 @@ defmodule Snapshy do
     value
     |> Inspect.Algebra.to_doc(inspect_options())
     |> Inspect.Algebra.group()
-    |> Inspect.Algebra.format(80)
-    |> Enum.join()
+    |> Inspect.Algebra.format(format_width_option())
   end
 
   defp deserialize(value) do
     {term, []} = Code.eval_string(value, [], __ENV__)
 
     term
+  end
+
+  defp format_width_option() do
+    Application.get_env(:snapshy, :format_width, 80)
   end
 
   defp inspect_options do
